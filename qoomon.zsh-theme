@@ -77,7 +77,7 @@ function _promp_handle_interupt {
   local FULLBUFFER="${PREBUFFER}${BUFFER}"
   if [ -n "$FULLBUFFER" ]; then
     local exit_code=130
-    echo -en "\n${fg_bold[grey]}◆ ${exit_code}${reset_color}"
+    echo -en "\n${fg_bold[grey]}✖ ${exit_code}${reset_color}"
   fi
 }
 trap '_promp_handle_interupt; return INT' INT
