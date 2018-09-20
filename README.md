@@ -3,7 +3,7 @@
 ## Screenshot
 ![Screenshot](screenshot.png)
 
-## Color Schemas
+## Color Schemes
 * [iterm2 - qoomon.itermcolors](qoomon.itermcolors)
 * [terminal - qoomon.itermcolors](qoomon.terminal)
 
