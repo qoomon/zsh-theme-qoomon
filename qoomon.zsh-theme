@@ -2,7 +2,7 @@ autoload +X -U colors && colors
 
 ###### Prompt Configuration ####################################################
 
-function _prompt_info {
+function _prompt_print_info {
 
   # --- prompt indicator
   local prompt_info="${fg_bold[grey]}#${reset_color} "
@@ -50,36 +50,40 @@ function _prompt_info {
   echo -e "$prompt_info"
 }
 
-precmd_functions=($precmd_functions _prompt_info)
+precmd_functions=($precmd_functions _prompt_print_info)
 PS1='‣ '
 PS2='• '
 
+
 ###### Handle Exit Codes #######################################################
 
-_prompt_exec_id=0
-function _prompt_exec_id_increment { ((_prompt_exec_id++)) }
-preexec_functions=(_prompt_exec_id_increment $preexec_functions)
+_prompt_exec_flag='false'
+function _prompt_flag_exec { 
+  _prompt_exec_flag='true'
+}
 
-_prompt_cmd_id=0
 function _prompt_handle_exit_code {
   local exit_code=$status
-  if [ $exit_code != 0 ] && [ $_prompt_exec_id != $_prompt_cmd_id ]; then
-    echo "${fg_bold[red]}✖ ${exit_code}${reset_color}"
+  if [ $exit_code != 0 ]; then
+    if [[ $_prompt_exec_flag == 'true' ]]; then
+      echo "${fg_bold[red]}✖ ${exit_code}${reset_color}"
+    fi
   fi
-  _prompt_cmd_id=$_prompt_exec_id
+  _prompt_exec_flag='false'
 }
+
+preexec_functions=(_prompt_flag_exec $preexec_functions)
 precmd_functions=(_prompt_handle_exit_code $precmd_functions)
 
-# print indicator when commandline is interupted
+# print dimed exit code when commandline is interupted
 function _promp_handle_interupt {
-  local FULLBUFFER="${PREBUFFER}${BUFFER}"
-  if [ -n "$FULLBUFFER" ]; then
-    local exit_code=130
-    echo -en "\n${fg_bold[grey]}✖ ${exit_code}${reset_color}"
+  local exit_code=130
+  if [ -n "${PREBUFFER}${BUFFER}" ]; then
+    echo
+    echo -en "${fg_bold[grey]}✖ ${exit_code}${reset_color}"
   fi
 }
-trap '_promp_handle_interupt; return INT' INT
-
+trap "_promp_handle_interupt; return INT" INT
 
 ###### clear screen with prompt info ###########################################
 
