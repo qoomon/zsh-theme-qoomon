@@ -46,6 +46,7 @@ function _prompt_info {
     fi
   fi
 
+  echo -en "\033[0K\r" # prevent strange line wrap behaviour when resizing terminal window
   echo -e "$prompt_info"
 }
 
