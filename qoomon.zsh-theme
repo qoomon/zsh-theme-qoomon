@@ -53,9 +53,6 @@ function _prompt_info {
 precmd_functions=($precmd_functions _prompt_info)
 PS1='‣ '
 PS2='• '
-# right prompt
-# RPROMPT='[%D{%H:%M:%S}]' # date
-
 
 ###### Handle Exit Codes #######################################################
 
@@ -84,20 +81,11 @@ function _promp_handle_interupt {
 trap '_promp_handle_interupt; return INT' INT
 
 
-###### Misc ####################################################################
+###### clear screen with prompt info ###########################################
 
-### Ensure that the prompt is redrawn when the terminal size changes.
-function TRAPWINCH {
-  zle && { zle reset-prompt; zle -R }
-}
-
-####  clear screen for mutiline prompt
 function _clear_screen_widget { 
   tput clear
-  local precmd
-  for precmd in $precmd_functions; do
-      $precmd
-  done
+  _prompt_info
   zle reset-prompt
 }
 zle -N _clear_screen_widget
