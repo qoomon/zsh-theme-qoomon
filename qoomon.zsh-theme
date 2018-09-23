@@ -9,20 +9,22 @@ function _prompt_print_info {
   prompt_info+="${fg_bold[grey]}#${reset_color}"
 
   # --- username
+  local user_name=${USER}
   if [ $EUID = 0 ]; then # highlight root user
-    prompt_info+=" ${fg_bold[red]}${USER}${reset_color}" 
+    prompt_info+=" ${fg_bold[red]}${user_name}${reset_color}" 
   else
-    prompt_info+=" ${fg[cyan]}${USER}${reset_color}"
+    prompt_info+=" ${fg[cyan]}${user_name}${reset_color}"
   fi
   
   # --- hostname
+  local host_name=${${HOST:-HOSTNAME}%%.*}
   prompt_info+="${fg_bold[grey]}@${reset_color}"
-  prompt_info+="${fg[blue]}${HOST:-HOSTNAME}${reset_color}"
+  prompt_info+="${fg[blue]}${host_name}${reset_color}"
 
   # --- directory
   # shorten $PWD: replace $HOME wit '~' and parent folders with first character only
   local current_dir=${${PWD/#$HOME/'~'}//(#m)[^\/]##\//${MATCH[1]}/} 
-  prompt_info+=" ${fg_bold[grey]}in${reset_color} "
+  prompt_info+=" ${fg_bold[grey]}in${reset_color}"
   prompt_info+=" ${fg[yellow]}$current_dir${reset_color}"
 
   if [ $commands[git] ]; then
