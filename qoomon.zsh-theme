@@ -54,8 +54,8 @@ function _prompt_print_info {
     fi
   fi
 
-  echo -en "\033[0K\r" # prevent strange line wrap behaviour when resizing terminal window
-  echo -e "$prompt_info"
+  # \033[0K\r prevents strange line wrap behaviour when resizing terminal window
+  printf "\033[0K\r${prompt_info}\n"
 }
 
 precmd_functions=($precmd_functions _prompt_print_info)
@@ -75,7 +75,8 @@ function _prompt_handle_exit_code {
   local exit_code=$status
   if [ $exit_code != 0 ]; then
     if [[ $_prompt_exec_flag == 'true' ]]; then
-      echo "${fg_bold[red]}✖ ${exit_code}${reset_color}"
+      # \033[0K\r prevents strange line wrap behaviour when resizing terminal window
+      printf "\033[0K\r${fg_bold[red]}✖ ${exit_code}${reset_color}\n"
     fi
   fi
   _prompt_exec_flag='false'
@@ -88,8 +89,7 @@ precmd_functions=(_prompt_handle_exit_code $precmd_functions)
 function _promp_handle_interupt {
   local exit_code=130
   if [ -n "${PREBUFFER}${BUFFER}" ]; then
-    echo
-    echo -en "${fg_bold[grey]}✖ ${exit_code}${reset_color}"
+    printf "\n${fg_bold[grey]}✖ ${exit_code}${reset_color}"
   fi
 }
 trap "_promp_handle_interupt; return INT" INT
