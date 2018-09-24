@@ -30,4 +30,4 @@
 * [terminal - qoomon.itermcolors](qoomon.terminal)
 
 ## Font
-[Andale Mono.ttf](Andale%20Mono.ttf)
+[Menlo.ttc](Menlo.ttc)
