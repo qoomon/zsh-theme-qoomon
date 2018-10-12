@@ -103,10 +103,10 @@ function _prompt_handle_exit_code {
 preexec_functions=(_prompt_flag_exec $preexec_functions)
 precmd_functions=(_prompt_handle_exit_code $precmd_functions)
 
-# print dimed exit code when commandline is interupted
+# print exit code when commandline is interupted
 function _promp_handle_interupt {
-  local exit_code=130
-  if [ -n "${PREBUFFER}${BUFFER}" ]; then
+  if [ "$SUFFIX_ACTIVE" = 0 ] && [ -n "${PREBUFFER}${BUFFER}" ]; then
+    local exit_code=130
     printf "\n${fg_bold[grey]}✖ ${exit_code}${reset_color}"
   fi
 }
