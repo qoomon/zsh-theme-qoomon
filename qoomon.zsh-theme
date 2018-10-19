@@ -116,7 +116,7 @@ trap "_promp_handle_interupt; return INT" INT
 
 function _clear_screen_widget { 
   tput clear
-  _prompt_info
+  _prompt_print_info
   zle reset-prompt
 }
 zle -N _clear_screen_widget
