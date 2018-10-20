@@ -93,8 +93,8 @@ function _prompt_handle_exit_code {
   local exit_code=$status
   if [ $exit_code != 0 ]; then
     if [[ $_prompt_exec_flag == 'true' ]]; then
-      # \033[0K\r prevents strange line wrap behaviour when resizing terminal window
-      printf "\033[0K\r${fg_bold[red]}✖ ${exit_code}${reset_color}\n"
+      printf "\033[2K" # \033[2K\r prevents strange line wrap behaviour when resizing terminal window
+      printf "${fg_bold[red]}✖ ${exit_code}${reset_color}\n"
     fi
   fi
   _prompt_exec_flag='false'
@@ -107,7 +107,8 @@ precmd_functions=(_prompt_handle_exit_code $precmd_functions)
 function _promp_handle_interupt {
   if [ "$SUFFIX_ACTIVE" = 0 ] && [ -n "${PREBUFFER}${BUFFER}" ]; then
     local exit_code=130
-    printf "\n${fg_bold[grey]}✖ ${exit_code}${reset_color}"
+    printf "\n\033[2K" # \033[2K\r prevents strange line wrap behaviour when resizing terminal window
+    printf "${fg_bold[grey]}✖ ${exit_code}${reset_color}"
   fi
 }
 trap "_promp_handle_interupt; return INT" INT
