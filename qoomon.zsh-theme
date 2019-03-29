@@ -48,26 +48,28 @@ function _prompt_print_info {
   # --- git info
   if [[ $PROMPT_INFO_GIT == 'true' ]] && [ $commands[git] ]; then
 
-    local current_branch_status_line="$(git status --short --branch --porcelain 2>/dev/null | head -1)"
+    local current_branch_status_line="$(git status 2>/dev/null | head -1)"
     if [ -n "$current_branch_status_line" ]; then
-      if [[ "$current_branch_status_line" == *"(no branch)"* ]]; then
+      local ref_name="$(echo $current_branch_status_line | awk '{print $NF}')"
+      if [[ "$current_branch_status_line" == "HEAD detached"* ]]; then
           prompt_info+=" ${fg_bold[grey]}at${reset_color}"
-          prompt_info+=" ${fg[green]}detached HEAD${reset_color}"
+          prompt_info+=" ${fg[green]}${ref_name}${reset_color}"
+          prompt_info+=" ${fg[magenta]}HEAD detached${reset_color}"
       else
-          local branch_name="${${current_branch_status_line#*' '}%%'...'*}"
           prompt_info+=" ${fg_bold[grey]}on${reset_color}"
-          prompt_info+=" ${fg[green]}${branch_name}${current_branch}${reset_color}"
+          prompt_info+=" ${fg[green]}${ref_name}${current_branch}${reset_color}"
       fi
 
       if [ -n "$(git status --short --porcelain 2>/dev/null)" ]; then
         prompt_info+="${fg_bold[magenta]}*${reset_color}"
       fi
       
-      if [[ "$current_branch_status_line" == *"ahead"* ]]; then
+      local git_remote_sync="$(git status --branch --porcelain | grep  -o "\[.*\]" | sed 's/^\[\(.*\)\]$/\1/')"
+      if [[ "$git_remote_sync" == "ahead "* ]]; then
         prompt_info+=" ${fg_bold[magenta]}⇡${reset_color}"
       fi
       
-      if [[ "$current_branch_status_line" == *"behind"* ]]; then
+      if [[ "$git_remote_sync" == "behind "* ]]; then
         prompt_info+=" ${fg_bold[magenta]}⇣${reset_color}"
       fi
     fi
