@@ -64,12 +64,12 @@ function _prompt_print_info {
         prompt_info+="${fg_bold[magenta]}*${reset_color}"
       fi
       
-      local git_remote_sync="$(git status --branch --porcelain | grep  -o "\[.*\]" | sed 's/^\[\(.*\)\]$/\1/')"
-      if [[ "$git_remote_sync" == "ahead "* ]]; then
+      local git_remote_sync="$(git status --branch --porcelain | grep  -o "\[.*\]")"
+      if [[ "$git_remote_sync" == *"ahead "* ]]; then
         prompt_info+=" ${fg_bold[magenta]}⇡${reset_color}"
       fi
       
-      if [[ "$git_remote_sync" == "behind "* ]]; then
+      if [[ "$git_remote_sync" == *"behind "* ]]; then
         prompt_info+=" ${fg_bold[magenta]}⇣${reset_color}"
       fi
     fi
