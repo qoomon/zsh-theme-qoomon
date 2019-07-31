@@ -13,8 +13,7 @@
   * Branch
   * Dirty flag `*` 
   * Indicator if your local repository is ahead `⇡` or behind origin `⇣`
-  
-* Print exit code `$status`, even if you interrupt the comandline
+* Display exit code `$status` after command failed
 
 ## Options
 * `PROMPT_INFO_INDICATOR` default `#`
