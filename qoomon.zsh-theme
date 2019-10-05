@@ -4,6 +4,7 @@ export PROMPT_INFO_INDICATOR=${PROMPT_INFO_INDICATOR:-'#'}
 export PROMPT_INFO_USER=${PROMPT_INFO_USER:-'true'}
 export PROMPT_INFO_HOST=${PROMPT_INFO_HOST:-'true'}
 export PROMPT_INFO_GIT=${PROMPT_INFO_GIT:-'true'}
+export PROMPT_INFO_SEPARATOR=${PROMPT_INFO_SEPARATOR:-'‣'}
 export PROMPT_PRIMARY_INDICATOR=${PROMPT_PRIMARY_INDICATOR:-'‣'}
 export PROMPT_SECONDARY_INDICATOR=${PROMPT_SECONDARY_INDICATOR:-'•'}
 
@@ -42,7 +43,7 @@ function _prompt_print_info {
   working_dir=${working_dir/#$HOME/'~'}
   # abbreviate intermediate directories with firt letter of directory name
   #working_dir=${working_dir//(#m)[^\/]##\//${MATCH[1]}/}
-  prompt_info+=" ${fg_bold[grey]}>${reset_color}"
+  prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPARATOR}${reset_color}"
   prompt_info+=" ${fg[yellow]}${working_dir}${reset_color}"
 
   # --- git info
@@ -52,11 +53,11 @@ function _prompt_print_info {
     if [ -n "$current_branch_status_line" ]; then
       local ref_name="$(echo $current_branch_status_line | awk '{print $NF}')"
       if [[ "$current_branch_status_line" == "HEAD detached"* ]]; then
-          prompt_info+=" ${fg_bold[grey]}>${reset_color}"
+          prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPARATOR}${reset_color}"
           prompt_info+=" ${fg[green]}${ref_name}${reset_color}"
           prompt_info+=" ${fg[magenta]}HEAD detached${reset_color}"
       else
-          prompt_info+=" ${fg_bold[grey]}>${reset_color}"
+          prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPARATOR}${reset_color}"
           prompt_info+=" ${fg[green]}${ref_name}${current_branch}${reset_color}"
       fi
 
