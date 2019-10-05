@@ -1,19 +1,19 @@
 autoload +X -U colors && colors
 
-PROMPT_INFO_INDICATOR='#'
-PROMPT_INFO_USER='true'
-PROMPT_INFO_HOST='true'
-PROMPT_INFO_GIT='true'
-PROMPT_PRIMARY_INDICATOR='‣'
-PROMPT_SECONDARY_INDICATOR='•'
+export PROMPT_INFO_INDICATOR=${PROMPT_INFO_INDICATOR:-'#'}
+export PROMPT_INFO_USER=${PROMPT_INFO_USER:-'true'}
+export PROMPT_INFO_HOST=${PROMPT_INFO_HOST:-'true'}
+export PROMPT_INFO_GIT=${PROMPT_INFO_GIT:-'true'}
+export PROMPT_PRIMARY_INDICATOR=${PROMPT_PRIMARY_INDICATOR:-'‣'}
+export PROMPT_SECONDARY_INDICATOR=${PROMPT_SECONDARY_INDICATOR:-'•'}
 
 ###### Prompt Configuration ####################################################
 
 function _prompt_print_info {
   setopt local_options extended_glob
-  
+
   local prompt_info
-  
+
   # --- prompt info indicator
   prompt_info+="${fg_bold[grey]}${PROMPT_INFO_INDICATOR}${reset_color}"
 
@@ -21,12 +21,12 @@ function _prompt_print_info {
   if [[ $PROMPT_INFO_USER == 'true' ]]; then
     local user_name=$USER
     if [ $EUID = 0 ]; then # highlight root user
-      prompt_info+=" ${fg_bold[red]}${user_name}${reset_color}" 
+      prompt_info+=" ${fg_bold[red]}${user_name}${reset_color}"
     else
       prompt_info+=" ${fg[cyan]}${user_name}${reset_color}"
     fi
   fi
-  
+
   # --- hostname
   if [[ $PROMPT_INFO_HOST == 'true' ]]; then
     local host_name=${HOST:-HOSTNAME}
@@ -41,10 +41,10 @@ function _prompt_print_info {
   # abbreviate $HOME with '~'
   working_dir=${working_dir/#$HOME/'~'}
   # abbreviate intermediate directories with firt letter of directory name
-  #working_dir=${working_dir//(#m)[^\/]##\//${MATCH[1]}/} 
-  prompt_info+=" ${fg_bold[grey]}in${reset_color}"
+  #working_dir=${working_dir//(#m)[^\/]##\//${MATCH[1]}/}
+  prompt_info+=" ${fg_bold[grey]}>${reset_color}"
   prompt_info+=" ${fg[yellow]}${working_dir}${reset_color}"
-  
+
   # --- git info
   if [[ $PROMPT_INFO_GIT == 'true' ]] && [ $commands[git] ]; then
 
@@ -52,23 +52,23 @@ function _prompt_print_info {
     if [ -n "$current_branch_status_line" ]; then
       local ref_name="$(echo $current_branch_status_line | awk '{print $NF}')"
       if [[ "$current_branch_status_line" == "HEAD detached"* ]]; then
-          prompt_info+=" ${fg_bold[grey]}at${reset_color}"
+          prompt_info+=" ${fg_bold[grey]}>${reset_color}"
           prompt_info+=" ${fg[green]}${ref_name}${reset_color}"
           prompt_info+=" ${fg[magenta]}HEAD detached${reset_color}"
       else
-          prompt_info+=" ${fg_bold[grey]}on${reset_color}"
+          prompt_info+=" ${fg_bold[grey]}>${reset_color}"
           prompt_info+=" ${fg[green]}${ref_name}${current_branch}${reset_color}"
       fi
 
       if [ -n "$(git status --short --porcelain 2>/dev/null)" ]; then
         prompt_info+="${fg_bold[magenta]}*${reset_color}"
       fi
-      
+
       local git_remote_sync="$(git status --branch --porcelain | grep  -o "\[.*\]")"
       if [[ "$git_remote_sync" == *"ahead "* ]]; then
         prompt_info+=" ${fg_bold[magenta]}⇡${reset_color}"
       fi
-      
+
       if [[ "$git_remote_sync" == *"behind "* ]]; then
         prompt_info+=" ${fg_bold[magenta]}⇣${reset_color}"
       fi
@@ -87,7 +87,7 @@ PS2="${PROMPT_SECONDARY_INDICATOR} "
 ###### Handle Exit Codes #######################################################
 
 _prompt_exec_flag='false'
-function _prompt_flag_exec { 
+function _prompt_flag_exec {
   _prompt_exec_flag='true'
 }
 
@@ -117,7 +117,7 @@ trap "_promp_handle_interupt; return INT" INT
 
 ###### clear screen with prompt info ###########################################
 
-function _clear_screen_widget { 
+function _clear_screen_widget {
   tput clear
   _prompt_print_info
   zle reset-prompt
