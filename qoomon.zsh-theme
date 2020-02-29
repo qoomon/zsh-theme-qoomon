@@ -88,36 +88,29 @@ PS2="${PROMPT_SECONDARY_INDICATOR} "
 
 ###### Handle Exit Codes #######################################################
 
-_prompt_exec_flag='false'
-function _prompt_flag_exec {
-  _prompt_exec_flag='true'
+typeset -g _prompt_line_executed
+function _prompt_preexec {
+  _prompt_line_executed='true'
 }
 
-function _prompt_handle_exit_code {
-  local exit_code=$status
-  if [ $exit_code != 0 ]; then
-    if [[ $_prompt_exec_flag == 'true' ]]; then
-      printf "\033[2K" # \033[2K\r prevents strange line wrap behaviour when resizing terminal window
-      printf "${fg_bold[red]}✖ ${exit_code}${reset_color}\n"
+function _prompt_precmd {
+  local exit_status=$status
+  if [[ $_prompt_line_executed == 'true' ]]; then
+    _prompt_line_executed='false'
+    if [[ $exit_status != 0 ]]; then
+      printf "\033[2K\r" # \033[2K\r prevents strange line wrap behaviour when resizing terminal window
+      printf "${fg_bold[red]}✖ ${exit_status}${reset_color}\n"
     fi
-  fi
-  _prompt_exec_flag='false'
-}
-
-preexec_functions=(_prompt_flag_exec $preexec_functions)
-precmd_functions=(_prompt_handle_exit_code $precmd_functions)
-
-# print exit code when commandline is interupted
-function _promp_handle_interupt {
-  if [ "$SUFFIX_ACTIVE" = 0 ] && [ -n "${PREBUFFER}${BUFFER}" ]; then
-    local exit_code=130
-    printf "\n\033[2K" # \033[2K\r prevents strange line wrap behaviour when resizing terminal window
-    printf "${fg_bold[grey]}✖ ${exit_code}${reset_color}"
+  elif [[ $ZLE_LINE_ABORTED ]] && [[ $_ZSH_HIGHLIGHT_PRIOR_BUFFER ]]; then
+    printf "\033[2K\r" # \033[2K\r prevents strange line wrap behaviour when resizing terminal window
+    printf "${fg_bold[grey]}✖ ${exit_status}${reset_color}\n"
   fi
 }
-trap "_promp_handle_interupt; return INT" INT
 
-###### clear screen with prompt info ###########################################
+preexec_functions=(_prompt_preexec $preexec_functions)
+precmd_functions=( _prompt_precmd $precmd_functions )
+
+###### clear s  creen with prompt info ###########################################
 
 function _clear_screen_widget {
   tput clear
