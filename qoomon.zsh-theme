@@ -89,26 +89,42 @@ PS2="${PROMPT_SECONDARY_INDICATOR} "
 ###### Handle Exit Codes #######################################################
 
 typeset -g _prompt_line_executed
-function _prompt_preexec {
+function _prompt_line_executed_preexec {
   _prompt_line_executed='true'
 }
+function _prompt_line_executed_precmd {
+  _prompt_line_executed='false'
+}
+preexec_functions=(_prompt_line_executed_preexec $preexec_functions)
+precmd_functions=(_prompt_line_executed_precmd $precmd_functions )
 
-function _prompt_precmd {
-  local exit_status=$status
-  if [[ $_prompt_line_executed == 'true' ]]; then
-    _prompt_line_executed='false'
-    if [[ $exit_status != 0 ]]; then
-      printf "\033[2K\r" # \033[2K\r prevents strange line wrap behaviour when resizing terminal window
-      printf "${fg_bold[red]}✖ ${exit_status}${reset_color}\n"
-    fi
-  elif [[ $ZLE_LINE_ABORTED ]] && [[ $_ZSH_HIGHLIGHT_PRIOR_BUFFER ]]; then
-    printf "\033[2K\r" # \033[2K\r prevents strange line wrap behaviour when resizing terminal window
-    printf "${fg_bold[grey]}✖ ${exit_status}${reset_color}\n"
+function _prompt_print_status {
+  local exec_status=$status
+  if [[ $_prompt_line_executed != 'true' ]]; then
+    return
+  fi
+    
+  if [[ $exec_status != 0 ]]; then
+    printf '\033[2K\r' # clear line; prevents strange line wrap behaviour when resizing terminal window
+    printf "${fg_bold[red]}✖ ${exec_status}${reset_color}\n"
   fi
 }
+precmd_functions=(_prompt_print_status $precmd_functions)
 
-preexec_functions=(_prompt_preexec $preexec_functions)
-precmd_functions=( _prompt_precmd $precmd_functions )
+# print exit code when command line is interupted
+function _promp_handle_interupt {
+  if [[ "$ZSH_EVAL_CONTEXT" != 'trap:shfunc' ]]; then
+    return
+  fi
+
+  if [[ "${PREBUFFER}${BUFFER}" ]]; then
+    printf '\n'
+    printf '\033[2K\r' #clear line
+    printf "${fg_bold[grey]}✖ 130${reset_color}"
+  fi
+}
+trap "_promp_handle_interupt; return 130" INT
+
 
 ###### clear s  creen with prompt info ###########################################
 
