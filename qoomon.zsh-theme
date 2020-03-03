@@ -124,3 +124,12 @@ function _promp_handle_interupt {
   fi
 }
 trap "_promp_handle_interupt; return 130" INT
+
+###### clears screen with prompt info ###########################################
+function clear-screen-widget {
+  tput clear
+  _prompt_print_info
+  zle reset-prompt
+}
+zle -N clear-screen-widget
+bindkey "^L" clear-screen-widget
