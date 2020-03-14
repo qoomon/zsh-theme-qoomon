@@ -1,4 +1,4 @@
-autoload +X -U colors && colors
+autoload -Uz colors && colors
 
 export PROMPT_INFO_INDICATOR=${PROMPT_INFO_INDICATOR:-'#'}
 export PROMPT_INFO_USER=${PROMPT_INFO_USER:-'true'}
@@ -44,8 +44,8 @@ function _prompt_print_info {
   # --- directory
   # abbreviate $HOME with '~'
   local working_dir=${PWD/#$HOME/'~'}
-  # abbreviate intermediate directories with firt letter of directory name
-  #working_dir=${working_dir//(#m)[^\/]##\//${MATCH[1]}/}
+  # abbreviate intermediate directories with first letter of directory name
+  # working_dir=${working_dir//(#m)[^\/]##\//${MATCH[1]}/}
   prompt_info+=" ${fg[yellow]}${working_dir}${reset_color}"
 
   # --- git info
