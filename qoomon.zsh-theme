@@ -6,6 +6,7 @@ export PROMPT_INFO_HOST=${PROMPT_INFO_HOST:-'true'}
 export PROMPT_INFO_GIT=${PROMPT_INFO_GIT:-'true'}
 export PROMPT_PRIMARY_INDICATOR=${PROMPT_PRIMARY_INDICATOR:-'‣'}
 export PROMPT_SECONDARY_INDICATOR=${PROMPT_SECONDARY_INDICATOR:-'•'}
+export PROMPT_INFO_SEPERATOR=${PROMPT_INFO_SEPERATOR:-'•'}
 
 ###### Prompt Configuration ####################################################
 
@@ -29,16 +30,12 @@ function _prompt_print_info {
 
   # --- hostname
   if [[ $PROMPT_INFO_HOST == 'true' ]]; then
-    local host_name=${HOST:-HOSTNAME}
-    # hide domain if any
-    host_name=${host_name%%.*}
     if [[ $PROMPT_INFO_USER == 'true' ]]; then
       prompt_info+="${fg_bold[grey]}@${reset_color}"
     fi
+    # hostname without domain
+    local host_name=${${HOST:-HOSTNAME}%%.*}
     prompt_info+="${fg[blue]}${host_name}${reset_color}"
-    prompt_info+=" ${fg_bold[grey]}‣${reset_color}"
-  elif [[ $PROMPT_INFO_USER == 'true' ]]; then
-      prompt_info+=" ${fg_bold[grey]}•${reset_color}"
   fi
 
   # --- directory
@@ -46,7 +43,7 @@ function _prompt_print_info {
   local working_dir=${PWD/#$HOME/'~'}
   # abbreviate intermediate directories with first letter of directory name
   # working_dir=${working_dir//(#m)[^\/]##\//${MATCH[1]}/}
-  prompt_info+=" ${fg[yellow]}${working_dir}${reset_color}"
+  prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPERATOR}${reset_color} ${fg[yellow]}${working_dir}${reset_color}"
 
   # --- git info
   if [[ $PROMPT_INFO_GIT == 'true' ]] && [ $commands[git] ]; then
@@ -54,7 +51,7 @@ function _prompt_print_info {
     local current_branch_status_line="$(git status 2>/dev/null | head -1)"
     if [ -n "$current_branch_status_line" ]; then
       local ref_name="$(echo $current_branch_status_line | awk '{print $NF}')"
-      prompt_info+=" ${fg_bold[grey]}•${reset_color}"
+      prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPERATOR}${reset_color}"
       if [[ "$current_branch_status_line" == "HEAD detached"* ]]; then
           prompt_info+=" ${fg[green]}${ref_name}${reset_color}"
           prompt_info+=" ${fg[magenta]}HEAD detached${reset_color}"

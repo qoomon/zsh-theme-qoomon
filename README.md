@@ -22,6 +22,7 @@
 * `PROMPT_INFO_GIT` default `true`
 * `PROMPT_PRIMARY_INDICATOR` default `‣`
 * `PROMPT_SECONDARY_INDICATOR` default `•`
+* `PROMPT_INFO_SEPERATOR` default `•`
 
 
 ## Color Schemes
