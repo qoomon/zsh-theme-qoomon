@@ -5,8 +5,8 @@ export PROMPT_INFO_SEPERATOR=${PROMPT_INFO_SEPERATOR:-'•'}
 export PROMPT_INFO_USER=${PROMPT_INFO_USER:-'true'}
 export PROMPT_INFO_HOST=${PROMPT_INFO_HOST:-'true'}
 export PROMPT_INFO_GIT=${PROMPT_INFO_GIT:-'true'}
-export PROMPT_PRIMARY_COMMAND_LINE_INDICATOR=${PROMPT_PRIMARY_COMMAND_LINE_INDICATOR:-'‣'}
-export PROMPT_SECONDARY_COMMAND_LINE_INDICATOR=${PROMPT_SECONDARY_COMMAND_LINE_INDICATOR:-'•'}
+export PROMPT_PRIMARY_INDICATOR=${PROMPT_PRIMARY_INDICATOR:-'‣'}
+export PROMPT_SECONDARY_INDICATOR=${PROMPT_SECONDARY_INDICATOR:-'•'}
 
 ###### Prompt Configuration ####################################################
 
@@ -80,8 +80,8 @@ function _prompt_print_info {
 
 precmd_functions=($precmd_functions _prompt_print_info)
 
-PS1="${PROMPT_PRIMARY_COMMAND_LINE_INDICATOR} "
-PS2="${PROMPT_SECONDARY_COMMAND_LINE_INDICATOR} "
+PS1="${PROMPT_PRIMARY_INDICATOR} "
+PS2="${PROMPT_SECONDARY_INDICATOR} "
 
 ###### Handle Exit Codes #######################################################
 
