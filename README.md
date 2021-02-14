@@ -1,4 +1,5 @@
-# zsh-theme-qoomon
+# qoomon zsh theme
+simple, beautiful, functional
 
 ## Screenshot
 ![Screenshot](screenshot.png)
@@ -29,5 +30,7 @@
 * [iterm2 - qoomon.itermcolors](qoomon.itermcolors)
 * [terminal - qoomon.itermcolors](qoomon.terminal)
 
-## Font
+
+## Fonts
+[Hack](https://github.com/source-foundry/Hack)
 [Menlo.ttc](Menlo.ttc)
