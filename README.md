@@ -11,8 +11,8 @@ simple, beautiful, functional
 * Display current directory `$PWD`
   * Home directory `$HOME` is displayed as `~`
 * Display git infos
-  * Branch
-  * Dirty flag `*` 
+  * Branch/Tag
+  * Dirty indicator `*` 
   * Indicator if your local repository is ahead `⇡` or behind origin `⇣`
 * Display exit code `$status` after command failed
 
