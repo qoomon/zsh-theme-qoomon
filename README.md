@@ -27,8 +27,9 @@ simple, beautiful, functional
 
 
 ## Color Schemes
-* [iTerm](qoomon.itermcolors)
-* [MacOS Terminal](qoomon.terminal)
+* qoomon
+  * [iTerm](qoomon.itermcolors)
+  * [MacOS Terminal](qoomon.terminal)
 
 
 ## Fonts
