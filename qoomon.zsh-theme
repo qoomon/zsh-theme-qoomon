@@ -78,7 +78,7 @@ function _prompt_print_info {
     
     # dirty indicator
     local dirty
-    if ! (git diff --cached --exit-code --quiet)
+    if ! (git diff --exit-code --quiet && git diff --cached --exit-code --quiet)
     then
       dirty=$PROMPT_INFO_GIT_DIRTY_INDICATOR
     else
