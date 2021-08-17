@@ -54,8 +54,8 @@ function _prompt_print_info {
   prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPERATOR}${reset_color} ${fg[yellow]}${working_dir}${reset_color}"
 
   # --- git info
-  if [[ $PROMPT_INFO_GIT == 'true' ]] && 
-     [[ $commands[git] ]] && (git rev-parse --is-inside-work-tree >& /dev/null)
+  if [[ $PROMPT_INFO_GIT == 'true' ]] && [[ $commands[git] ]] && 
+     [[ $(git rev-parse --is-inside-work-tree 2> /dev/null || echo false) != 'false' ]]
   then
     prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPERATOR}${reset_color}"
     
@@ -96,7 +96,7 @@ function _prompt_print_info {
     then
       prompt_info+="${fg_bold[magenta]}${dirty}${reset_color}"
     fi
-        
+    
     # commits ahead and behind
     if [[ $branch ]]
     then
