@@ -1,6 +1,8 @@
 # qoomon zsh theme
 simple, beautiful, functional
 
+###### ⓘ used by https://github.com/qoomon/my-zsh
+
 ## Screenshot
 ![Screenshot](screenshot.png)
 
