@@ -36,5 +36,6 @@ simple, beautiful, functional
 
 
 ## Fonts
+* [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
 * [SourceCodePro](https://github.com/adobe-fonts/source-code-pro)
 * [Hack](https://github.com/source-foundry/Hack)
