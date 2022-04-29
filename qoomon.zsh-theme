@@ -6,7 +6,7 @@ PROMPT_INFO_GIT='true'
 
 PROMPT_INFO_INDICATOR='╭─'
 PROMPT_INFO_SEPERATOR='∙' # • (bold)
-PROMPT_INFO_GIT_DIRTY_INDICATOR='*'
+PROMPT_INFO_GIT_DIRTY_INDICATOR='✲' # ⁎
 PROMPT_PRIMARY_INDICATOR='╰─➜ ' # ‣
 PROMPT_SECONDARY_INDICATOR=''
 PROMPT_ERROR_INDICATOR='✕' # ✖ (bold)
@@ -105,11 +105,11 @@ function _prompt_print_info {
         read ahead behind <<<$(git rev-list --left-right --count $branch...$remote_branch)
         if [[ $ahead -gt 0 ]]
         then
-          prompt_info+=" ${fg_bold[magenta]}⇡${reset_color}"
+          prompt_info+="${fg_bold[magenta]}↑↓${reset_color}"
         fi
         if [[ $behind -gt 0 ]]
         then
-          prompt_info+=" ${fg_bold[magenta]}⇣${reset_color}"
+          prompt_info+="${fg_bold[magenta]}↓${reset_color}"
         fi
       fi
     fi
