@@ -4,16 +4,15 @@ PROMPT_INFO_USER='true'
 PROMPT_INFO_HOST='true'
 PROMPT_INFO_GIT='true'
 
-PROMPT_INFO_INDICATOR='#'
-PROMPT_INFO_SEPERATOR='•'
+PROMPT_INFO_INDICATOR='╭─'
+PROMPT_INFO_SEPERATOR='∙' # • (bold)
 PROMPT_INFO_GIT_DIRTY_INDICATOR='*'
-PROMPT_PRIMARY_INDICATOR='‣'
-PROMPT_SECONDARY_INDICATOR='•'
-
+PROMPT_PRIMARY_INDICATOR='╰─➜ ' # ‣
+PROMPT_SECONDARY_INDICATOR=''
+PROMPT_ERROR_INDICATOR='✕' # ✖ (bold)
 
 ###### Prompt Configuration ####################################################
 
-#0.270
 function _prompt_print_info {
   setopt local_options extended_glob
 
@@ -27,7 +26,7 @@ function _prompt_print_info {
   then
     local user_name=$USER
     if [ $EUID = 0 ] # highlight root user
-    then 
+    then
       prompt_info+=" ${fg_bold[red]}${user_name}${reset_color}"
     else
       prompt_info+=" ${fg[cyan]}${user_name}${reset_color}"
@@ -54,11 +53,11 @@ function _prompt_print_info {
   prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPERATOR}${reset_color} ${fg[yellow]}${working_dir}${reset_color}"
 
   # --- git info
-  if [[ $PROMPT_INFO_GIT == 'true' ]] && [[ $commands[git] ]] && 
+  if [[ $PROMPT_INFO_GIT == 'true' ]] && [[ $commands[git] ]] &&
      [[ $(git rev-parse --is-inside-work-tree 2> /dev/null || echo false) != 'false' ]]
   then
     prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPERATOR}${reset_color}"
-    
+
     # branch name
     local branch=$(git branch --show-current HEAD)
     local ref_name=$branch
@@ -72,10 +71,10 @@ function _prompt_print_info {
       then
         # commit hash
         ref_name=$(git rev-parse --short HEAD)
-      fi  
+      fi
     fi
     prompt_info+=" ${fg[green]}${ref_name}${reset_color}"
-    
+
     # dirty indicator
     local dirty
     if ! (git diff --exit-code --quiet && git diff --cached --exit-code --quiet)
@@ -90,13 +89,13 @@ function _prompt_print_info {
         fi
       else # skip check for large repositories
         dirty='?'
-      fi   
+      fi
     fi
     if [[ $dirty ]]
     then
       prompt_info+="${fg_bold[magenta]}${dirty}${reset_color}"
     fi
-    
+
     # commits ahead and behind
     if [[ $branch ]]
     then
@@ -122,8 +121,8 @@ function _prompt_print_info {
 
 precmd_functions=($precmd_functions _prompt_print_info)
 
-PS1="${PROMPT_PRIMARY_INDICATOR} "
-PS2="${PROMPT_SECONDARY_INDICATOR} "
+PS1="%{${fg_bold[grey]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
+PS2="%{${fg_bold[grey]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
 
 ###### Handle Exit Codes #######################################################
 
@@ -143,11 +142,11 @@ function _prompt_print_status {
   then
     return
   fi
-    
+
   if [[ $exec_status != 0 ]]
   then
     printf '\033[2K\r' # clear line; prevents strange line wrap behaviour when resizing terminal window
-    printf "${fg_bold[red]}✖ ${exec_status}${reset_color}\n"
+    printf "${fg_bold[red]}${PROMPT_ERROR_INDICATOR} ${exec_status}${reset_color}\n"
   fi
 }
 precmd_functions=(_prompt_print_status $precmd_functions)
@@ -163,7 +162,7 @@ function _promp_handle_interupt {
   then
     printf '\n'
     printf '\033[2K\r' #clear line
-    printf "${fg_bold[grey]}✖ 130${reset_color}"
+    printf "${fg_bold[grey]}${} 130${reset_color}"
   fi
 }
 trap "_promp_handle_interupt; return 130" INT
