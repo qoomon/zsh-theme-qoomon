@@ -105,7 +105,7 @@ function _prompt_print_info {
         read ahead behind <<<$(git rev-list --left-right --count $branch...$remote_branch)
         if [[ $ahead -gt 0 ]]
         then
-          prompt_info+="${fg_bold[magenta]}↑↓${reset_color}"
+          prompt_info+="${fg_bold[magenta]}↑${reset_color}"
         fi
         if [[ $behind -gt 0 ]]
         then
