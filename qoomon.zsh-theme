@@ -5,10 +5,11 @@ PROMPT_INFO_HOST='true'
 PROMPT_INFO_GIT='true'
 
 PROMPT_INFO_INDICATOR='╭─'
-PROMPT_INFO_SEPERATOR='∙' # • (bold)
-PROMPT_INFO_GIT_DIRTY_INDICATOR='✲' # ⁎
 PROMPT_PRIMARY_INDICATOR='╰─➜ ' # ‣
 PROMPT_SECONDARY_INDICATOR=''
+
+PROMPT_INFO_SEPERATOR='∙' # • (bold)
+PROMPT_INFO_GIT_DIRTY_INDICATOR='✲' # ⁎
 PROMPT_ERROR_INDICATOR='✕' # ✖ (bold)
 
 ###### Prompt Configuration ####################################################
