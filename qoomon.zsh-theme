@@ -4,13 +4,14 @@ PROMPT_INFO_USER='true'
 PROMPT_INFO_HOST='true'
 PROMPT_INFO_GIT='true'
 
-PROMPT_INFO_INDICATOR='╭─'
-PROMPT_PRIMARY_INDICATOR='╰─➜ ' # ‣
+PROMPT_INFO_INDICATOR='╭─ ' # ─ ╴
+
+PROMPT_PRIMARY_INDICATOR='╰╴› ' # › ❯
 PROMPT_SECONDARY_INDICATOR=''
 
-PROMPT_INFO_SEPERATOR='∙' # • (bold)
-PROMPT_INFO_GIT_DIRTY_INDICATOR='✲' # ⁎
-PROMPT_ERROR_INDICATOR='✕' # ✖ (bold)
+PROMPT_INFO_SEPERATOR=' › ' # ∙ ❯ ›
+PROMPT_INFO_GIT_DIRTY_INDICATOR='✲'
+PROMPT_ERROR_INDICATOR='✕'
 
 ###### Prompt Configuration ####################################################
 
@@ -20,7 +21,7 @@ function _prompt_print_info {
   local prompt_info
 
   # --- prompt info indicator
-  prompt_info+="${fg_bold[default]}${PROMPT_INFO_INDICATOR}${reset_color}"
+  prompt_info+="${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color}"
 
   # --- username
   if [[ $PROMPT_INFO_USER == 'true' ]]
@@ -28,9 +29,9 @@ function _prompt_print_info {
     local user_name=$USER
     if [ $EUID = 0 ] # highlight root user
     then
-      prompt_info+=" ${fg_bold[red]}${user_name}${reset_color}"
+      prompt_info+="${fg_bold[red]}${user_name}${reset_color}"
     else
-      prompt_info+=" ${fg[cyan]}${user_name}${reset_color}"
+      prompt_info+="${fg[cyan]}${user_name}${reset_color}"
     fi
   fi
 
@@ -51,50 +52,54 @@ function _prompt_print_info {
   local working_dir=${PWD/#$HOME/'~'}
   # abbreviate intermediate directories with first letter of directory name
   # working_dir=${working_dir//(#m)[^\/]##\//${MATCH[1]}/}
-  prompt_info+=" ${fg_bold[default]}${PROMPT_INFO_SEPERATOR}${reset_color} ${fg[yellow]}${working_dir}${reset_color}"
+  prompt_info+="${fg[default]}${PROMPT_INFO_SEPERATOR}${reset_color}${fg[yellow]}${working_dir}${reset_color}"
 
   # --- git info
   if [[ $PROMPT_INFO_GIT == 'true' ]] && [[ $commands[git] ]] &&
      [[ $(git rev-parse --is-inside-work-tree 2> /dev/null || echo false) != 'false' ]]
   then
-    prompt_info+=" ${fg_bold[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
+    prompt_info+="${fg[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
 
     # branch name
     local branch=$(git branch --show-current HEAD)
-    local ref_name=$branch
-    if [[ ! $ref_name ]]
+    if [[ $branch ]]
     then
-      prompt_info+=" ${fg[magenta]}HEAD detached${reset_color}"
-      prompt_info+=" ${fg_bold[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
+      prompt_info+="${fg[green]}${branch}${reset_color}"
+    else
+      prompt_info+="${fg[magenta]}HEAD detached${reset_color}"
+      prompt_info+="${fg[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
       # tag name
-      ref_name=$(git tag --sort=-creatordate --points-at HEAD | head -1)
-      if [[ ! $ref_name ]]
+      local tag=$(git tag --sort=-creatordate --points-at HEAD | head -1)
+      if [[ $tag ]]
       then
+        prompt_info+="${fg[green]}${tag}${reset_color}"
+      else
         # commit hash
-        ref_name=$(git rev-parse --short HEAD)
+        local commit_hash=$(git rev-parse --short HEAD)
+        prompt_info+="${fg[green]}${commit_hash}${reset_color}"
       fi
+
     fi
-    prompt_info+=" ${fg[green]}${ref_name}${reset_color}"
 
     # dirty indicator
-    local dirty
+    local dirty_indicator
     if ! (git diff --exit-code --quiet && git diff --cached --exit-code --quiet)
     then
-      dirty=$PROMPT_INFO_GIT_DIRTY_INDICATOR
+      dirty_indicator=$PROMPT_INFO_GIT_DIRTY_INDICATOR
     else
       if [[ $(git ls-files | wc -l) -lt 10000 ]]
       then # check for untracked files
         if [[ $(git ls-files --others --exclude-standard | wc -l) -gt 0 ]]
         then
-          dirty=$PROMPT_INFO_GIT_DIRTY_INDICATOR
+          dirty_indicator=$PROMPT_INFO_GIT_DIRTY_INDICATOR
         fi
       else # skip check for large repositories
-        dirty='?'
+        dirty_indicator='?'
       fi
     fi
-    if [[ $dirty ]]
+    if [[ $dirty_indicator ]]
     then
-      prompt_info+="${fg_bold[magenta]}${dirty}${reset_color}"
+      prompt_info+="${fg_bold[magenta]}${dirty_indicator}${reset_color}"
     fi
 
     # commits ahead and behind
@@ -122,8 +127,8 @@ function _prompt_print_info {
 
 precmd_functions=($precmd_functions _prompt_print_info)
 
-PS1="%{${fg_bold[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
-PS2="%{${fg_bold[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
+PS1="%{${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
+PS2="%{${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
 
 ###### Handle Exit Codes #######################################################
 
