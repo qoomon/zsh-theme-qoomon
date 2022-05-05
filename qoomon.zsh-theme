@@ -20,7 +20,7 @@ function _prompt_print_info {
   local prompt_info
 
   # --- prompt info indicator
-  prompt_info+="${fg_bold[grey]}${PROMPT_INFO_INDICATOR}${reset_color}"
+  prompt_info+="${fg_bold[default]}${PROMPT_INFO_INDICATOR}${reset_color}"
 
   # --- username
   if [[ $PROMPT_INFO_USER == 'true' ]]
@@ -39,7 +39,7 @@ function _prompt_print_info {
   then
     if [[ $PROMPT_INFO_USER == 'true' ]]
     then
-      prompt_info+="${fg_bold[grey]}@${reset_color}"
+      prompt_info+="${fg_bold[default]}@${reset_color}"
     fi
     # hostname without domain
     local host_name=${${HOST:-HOSTNAME}%%.*}
@@ -51,13 +51,13 @@ function _prompt_print_info {
   local working_dir=${PWD/#$HOME/'~'}
   # abbreviate intermediate directories with first letter of directory name
   # working_dir=${working_dir//(#m)[^\/]##\//${MATCH[1]}/}
-  prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPERATOR}${reset_color} ${fg[yellow]}${working_dir}${reset_color}"
+  prompt_info+=" ${fg_bold[default]}${PROMPT_INFO_SEPERATOR}${reset_color} ${fg[yellow]}${working_dir}${reset_color}"
 
   # --- git info
   if [[ $PROMPT_INFO_GIT == 'true' ]] && [[ $commands[git] ]] &&
      [[ $(git rev-parse --is-inside-work-tree 2> /dev/null || echo false) != 'false' ]]
   then
-    prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPERATOR}${reset_color}"
+    prompt_info+=" ${fg_bold[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
 
     # branch name
     local branch=$(git branch --show-current HEAD)
@@ -65,7 +65,7 @@ function _prompt_print_info {
     if [[ ! $ref_name ]]
     then
       prompt_info+=" ${fg[magenta]}HEAD detached${reset_color}"
-      prompt_info+=" ${fg_bold[grey]}${PROMPT_INFO_SEPERATOR}${reset_color}"
+      prompt_info+=" ${fg_bold[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
       # tag name
       ref_name=$(git tag --sort=-creatordate --points-at HEAD | head -1)
       if [[ ! $ref_name ]]
@@ -122,8 +122,8 @@ function _prompt_print_info {
 
 precmd_functions=($precmd_functions _prompt_print_info)
 
-PS1="%{${fg_bold[grey]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
-PS2="%{${fg_bold[grey]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
+PS1="%{${fg_bold[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
+PS2="%{${fg_bold[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
 
 ###### Handle Exit Codes #######################################################
 
@@ -163,7 +163,7 @@ function _promp_handle_interupt {
   then
     printf '\n'
     printf '\033[2K\r' #clear line
-    printf "${fg_bold[grey]}${} 130${reset_color}"
+    printf "${fg_bold[default]}${} 130${reset_color}"
   fi
 }
 trap "_promp_handle_interupt; return 130" INT
