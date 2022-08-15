@@ -171,7 +171,7 @@ function _promp_handle_interupt {
   then
     printf '\n'
     printf '\033[2K\r' #clear line
-    printf "${fg_bold[default]}${} 130${reset_color}"
+    printf "${fg_bold[default]}∙ 130${reset_color}"
   fi
 }
 trap "_promp_handle_interupt; return 130" INT
