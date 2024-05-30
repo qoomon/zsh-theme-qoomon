@@ -18,14 +18,11 @@ PROMPT_INFO_GIT_PULL_INDICATOR='↓'
 
 ###### Prompt Configuration ####################################################
 
-function _prompt_print_info {
+function prompt_headline {
   setopt local_options extended_glob
 
   local prompt_info
-
-  # --- prompt info indicator
-  prompt_info+="${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color}"
-
+  
   # --- username
   if [[ $PROMPT_INFO_USER == 'true' ]]
   then
@@ -124,12 +121,18 @@ function _prompt_print_info {
     fi
   fi
 
-  # \033[0K\r prevents strange line wrap behaviour when resizing terminal window
-  printf "\033[0K\r${prompt_info}\n"
+  # iterm2 prompt mark support, mark prompt_headline instead of PS1
+  if [[ $functions[iterm2_prompt_mark] ]]
+  then
+    ITERM2_SQUELCH_MARK=1
+    echo -n "$(iterm2_prompt_mark)"
+  fi  
+  
+  # \033[0K prevents strange line wrap behaviour when resizing terminal window
+  echo "${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color} ${prompt_info}"$'\033[0K\r'
 }
 
-precmd_functions=($precmd_functions _prompt_print_info)
-
+precmd_functions=($precmd_functions prompt_headline)
 PS1="%{${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
 PS2="%{${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
 
