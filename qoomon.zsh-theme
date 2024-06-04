@@ -83,7 +83,7 @@ function prompt_headline {
 
     # dirty indicator
     local dirty_indicator
-    if ! (git diff --exit-code --quiet && git diff --cached --exit-code --quiet)
+    if ! (git diff --exit-code --quiet 2> /dev/null && git diff --cached --exit-code --quiet 2> /dev/null)
     then
       dirty_indicator=$PROMPT_INFO_GIT_DIRTY_INDICATOR
     else
