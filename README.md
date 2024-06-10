@@ -4,7 +4,8 @@ simple, beautiful, functional
 ###### ⓘ used by https://github.com/qoomon/my-zsh
 
 ## Screenshot
-![Screenshot](screenshot.png)
+<img width="767" alt="prompt_example" src="https://github.com/qoomon/zsh-theme-qoomon/assets/3963394/56c7072e-7fe2-426f-8679-7ec032679162">
+
 
 ## Features
 * Display username 
