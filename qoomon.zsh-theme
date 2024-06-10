@@ -128,8 +128,10 @@ function prompt_headline {
     echo -n "$(iterm2_prompt_mark)"
   fi  
   
-  # \033[0K prevents strange line wrap behaviour when resizing terminal window
-  echo "${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color} ${prompt_info}"$'\033[0K\r'
+  # prevents strange line wrap behaviour when resizing terminal window
+  echo -n $'\033[0K\r'
+  
+  echo "${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color} ${prompt_info}"
 }
 
 precmd_functions=($precmd_functions prompt_headline)
