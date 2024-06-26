@@ -22,7 +22,7 @@ function prompt_headline {
   setopt local_options extended_glob
 
   local prompt_info
-  
+
   # --- username
   if [[ $PROMPT_INFO_USER == 'true' ]]
   then
@@ -120,30 +120,35 @@ function prompt_headline {
       fi
     fi
   fi
-  
+
   printf $'\033[0K' # prevents strange line wrap behaviour when resizing iterm2 terminal window
   echo "${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color} ${prompt_info}"
 }
 
-PROMPT_CMDLINE="%{${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
-
-setopt prompt_subst
-PS1=$'$(prompt_headline)\n'"$PROMPT_CMDLINE"
-PS2="%{${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
-
 if [[ $LC_TERMINAL == 'iTerm2' ]]
 then
-  function prompt_iterm2_fix {
+  function prompt_iterm2_prompt_mark {
     # if shell integration has been enabled,
     # mark prompt_headline instead of PS1
     if [[ $functions[iterm2_prompt_mark] ]]
     then
         ITERM2_SQUELCH_MARK=1
         iterm2_prompt_mark
-    fi  
+    fi
   }
-  precmd_functions=($precmd_functions prompt_iterm2_fix prompt_headline)
-  PS1="$PROMPT_CMDLINE"
+  precmd_functions=($precmd_functions prompt_iterm2_prompt_mark)
+fi
+
+precmd_functions=($precmd_functions prompt_headline)
+PS1='%{'"${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}"'%}'
+PS2='%{'"${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}"'%}'
+
+if [[ $TERMINAL_EMULATOR == 'JetBrains-JediTerm' ]]
+then
+    precmd_functions[${precmd_functions[(i)prompt_headline]}]=()
+    #precmd_functions=(${precmd_functions:#prompt_headline})
+    setopt prompt_subst
+    PS1=$'$(prompt_headline)\n'"$PS1"
 fi
 
 
