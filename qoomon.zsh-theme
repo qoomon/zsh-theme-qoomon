@@ -121,16 +121,17 @@ function prompt_headline {
     fi
   fi
   
+  printf $'\033[0K' # prevents strange line wrap behaviour when resizing iterm2 terminal window
   echo "${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color} ${prompt_info}"
 }
 
-PS1_CMDLINE="%{${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
+PROMPT_CMDLINE="%{${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
 
 setopt prompt_subst
-PS1=$'$(prompt_headline)\n'"$PS1_CMDLINE"
+PS1=$'$(prompt_headline)\n'"$PROMPT_CMDLINE"
 PS2="%{${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
 
-if [[ $LC_TERMINAL == 'iTerm2XX' ]]
+if [[ $LC_TERMINAL == 'iTerm2' ]]
 then
   function prompt_iterm2_fix {
     # if shell integration has been enabled,
@@ -138,16 +139,12 @@ then
     if [[ $functions[iterm2_prompt_mark] ]]
     then
         ITERM2_SQUELCH_MARK=1
-        echo -n "$(iterm2_prompt_mark)"
+        iterm2_prompt_mark
     fi  
-    
-    # prevents strange line wrap behaviour when resizing iterm2 terminal window
-    echo -n $'\033[0K\r'
   }
   precmd_functions=($precmd_functions prompt_iterm2_fix prompt_headline)
-  PS1="$PS1_CMDLINE"
+  PS1="$PROMPT_CMDLINE"
 fi
-
 
 
 ###### Handle Exit Codes #######################################################
@@ -160,7 +157,7 @@ function _prompt_line_executed_precmd {
   _prompt_line_executed='false'
 }
 preexec_functions=(_prompt_line_executed_preexec $preexec_functions)
-precmd_functions=(_prompt_line_executed_precmd $precmd_functions )
+precmd_functions=(_prompt_line_executed_precmd $precmd_functions)
 
 function _prompt_print_status {
   local exec_status=$status
@@ -171,7 +168,7 @@ function _prompt_print_status {
 
   if [[ $exec_status != 0 ]]
   then
-    printf '\033[2K\r' # clear line; prevents strange line wrap behaviour when resizing terminal window
+    printf '\033[2K' # prevents strange line wrap behaviour when resizing iterm2 terminal window
     printf "${fg_bold[red]}${PROMPT_ERROR_INDICATOR} ${exec_status}${reset_color}\n"
   fi
 }
@@ -187,7 +184,7 @@ function _promp_handle_interupt {
   if [[ "${PREBUFFER}${BUFFER}" ]]
   then
     printf '\n'
-    printf '\033[2K\r' #clear line
+    printf '\033[2K' # prevents strange line wrap behaviour when resizing iterm2 terminal window
     printf "${fg_bold[default]}∙ 130${reset_color}"
   fi
 }
