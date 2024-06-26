@@ -120,23 +120,35 @@ function prompt_headline {
       fi
     fi
   fi
-
-  # iterm2 prompt mark support, mark prompt_headline instead of PS1
-  if [[ $functions[iterm2_prompt_mark] ]]
-  then
-    ITERM2_SQUELCH_MARK=1
-    echo -n "$(iterm2_prompt_mark)"
-  fi  
-  
-  # prevents strange line wrap behaviour when resizing terminal window
-  echo -n $'\033[0K\r'
   
   echo "${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color} ${prompt_info}"
 }
 
-precmd_functions=($precmd_functions prompt_headline)
-PS1="%{${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
+PS1_CMDLINE="%{${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
+
+setopt prompt_subst
+PS1=$'$(prompt_headline)\n'"$PS1_CMDLINE"
 PS2="%{${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
+
+if [[ $LC_TERMINAL == 'iTerm2XX' ]]
+then
+  function prompt_iterm2_fix {
+    # if shell integration has been enabled,
+    # mark prompt_headline instead of PS1
+    if [[ $functions[iterm2_prompt_mark] ]]
+    then
+        ITERM2_SQUELCH_MARK=1
+        echo -n "$(iterm2_prompt_mark)"
+    fi  
+    
+    # prevents strange line wrap behaviour when resizing iterm2 terminal window
+    echo -n $'\033[0K\r'
+  }
+  precmd_functions=($precmd_functions prompt_iterm2_fix prompt_headline)
+  PS1="$PS1_CMDLINE"
+fi
+
+
 
 ###### Handle Exit Codes #######################################################
 
