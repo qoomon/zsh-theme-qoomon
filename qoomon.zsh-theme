@@ -55,8 +55,8 @@ function prompt_headline {
   prompt_info+="${fg[default]}${PROMPT_INFO_SEPERATOR}${reset_color}${fg[yellow]}${working_dir}${reset_color}"
 
   # --- git info
-  if [[ $PROMPT_INFO_GIT == 'true' ]] && [[ $commands[git] ]] &&
-     [[ $(git rev-parse --is-inside-work-tree 2> /dev/null || echo false) != 'false' ]]
+  if [[ $PROMPT_INFO_GIT == 'true' ]] &&
+    [[ $commands[git] ]] && git rev-parse --is-inside-work-tree &> /dev/null
   then
     prompt_info+="${fg[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
 
