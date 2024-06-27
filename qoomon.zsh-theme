@@ -125,29 +125,33 @@ function prompt_headline {
   echo "${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color} ${prompt_info}"
 }
 
-if [[ $LC_TERMINAL == 'iTerm2' ]]
-then
-  function prompt_iterm2_prompt_mark {
-    # if shell integration has been enabled,
-    # mark prompt_headline instead of PS1
-    if [[ $functions[iterm2_prompt_mark] ]]
-    then
-        ITERM2_SQUELCH_MARK=1
-        iterm2_prompt_mark
-    fi
-  }
-  precmd_functions=($precmd_functions prompt_iterm2_prompt_mark)
-fi
-
 precmd_functions=($precmd_functions prompt_headline)
 PS1='%{'"${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}"'%}'
 PS2='%{'"${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}"'%}'
 
+if [[ $LC_TERMINAL == 'iTerm2' ]]
+then
+  precmd_functions[${precmd_functions[(i)prompt_headline]}]=()
+
+  ITERM2_SQUELCH_MARK=1 # enable manual prompt marking
+  function prompt_headline_iterm2 {
+    echo $(
+        if [[ $functions[iterm2_prompt_mark] ]]
+        then
+            iterm2_prompt_mark # mark headline as prompt start
+        fi
+        prompt_headline
+    )
+  }
+  precmd_functions=($precmd_functions prompt_headline_iterm2)
+fi
+
 if [[ $TERMINAL_EMULATOR == 'JetBrains-JediTerm' ]]
 then
     precmd_functions[${precmd_functions[(i)prompt_headline]}]=()
+
     setopt prompt_subst
-    PS1=$'$(prompt_headline)\n'"$PS1"
+    PS1=$'%{$(prompt_headline)%}\n'"$PS1"
 fi
 
 
