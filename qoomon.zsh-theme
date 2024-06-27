@@ -146,7 +146,6 @@ PS2='%{'"${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}"'%}'
 if [[ $TERMINAL_EMULATOR == 'JetBrains-JediTerm' ]]
 then
     precmd_functions[${precmd_functions[(i)prompt_headline]}]=()
-    #precmd_functions=(${precmd_functions:#prompt_headline})
     setopt prompt_subst
     PS1=$'$(prompt_headline)\n'"$PS1"
 fi
