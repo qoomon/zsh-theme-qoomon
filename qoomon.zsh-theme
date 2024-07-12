@@ -4,7 +4,7 @@ PROMPT_INFO_USER='true'
 PROMPT_INFO_HOST='true'
 PROMPT_INFO_GIT='true'
 
-PROMPT_INFO_INDICATOR='╭╴' # ─ ╴
+PROMPT_INFO_INDICATOR='' # '╭╴ '
 
 PROMPT_PRIMARY_INDICATOR='╰╼ '
 PROMPT_SECONDARY_INDICATOR=''
@@ -22,7 +22,7 @@ function prompt_headline {
   setopt local_options extended_glob
 
   local prompt_info
-
+  
   # --- username
   if [[ $PROMPT_INFO_USER == 'true' ]]
   then
@@ -52,13 +52,13 @@ function prompt_headline {
   local working_dir=${PWD/#$HOME/'~'}
   # abbreviate intermediate directories with first letter of directory name
   # working_dir=${working_dir//(#m)[^\/]##\//${MATCH[1]}/}
-  prompt_info+="${fg[default]}${PROMPT_INFO_SEPERATOR}${reset_color}${fg[yellow]}${working_dir}${reset_color}"
+  prompt_info+="${fg_bold[default]}${PROMPT_INFO_SEPERATOR}${reset_color}${fg[yellow]}${working_dir}${reset_color}"
 
   # --- git info
-  if [[ $PROMPT_INFO_GIT == 'true' ]] &&
-    [[ $commands[git] ]] && git rev-parse --is-inside-work-tree &> /dev/null
+  if [[ $PROMPT_INFO_GIT == 'true' ]] && [[ $commands[git] ]] &&
+     [[ $(git rev-parse --is-inside-work-tree 2> /dev/null || echo false) != 'false' ]]
   then
-    prompt_info+="${fg[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
+    prompt_info+="${fg_bold[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
 
     # branch name
     local branch=$(git branch --show-current HEAD)
@@ -67,7 +67,7 @@ function prompt_headline {
       prompt_info+="${fg[green]}${branch}${reset_color}"
     else
       prompt_info+="${fg[magenta]}HEAD detached${reset_color}"
-      prompt_info+="${fg[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
+      prompt_info+="${fg_bold[default]}${PROMPT_INFO_SEPERATOR}${reset_color}"
       # tag name
       local tag=$(git tag --sort=-creatordate --points-at HEAD | head -1)
       if [[ $tag ]]
@@ -120,38 +120,30 @@ function prompt_headline {
       fi
     fi
   fi
-
+  
   printf $'\033[0K' # prevents strange line wrap behaviour when resizing iterm2 terminal window
-  echo "${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color} ${prompt_info}"
+  echo "${fg[default]}${PROMPT_INFO_INDICATOR}${reset_color}${prompt_info}"
 }
 
-precmd_functions=($precmd_functions prompt_headline)
-PS1='%{'"${fg[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}"'%}'
-PS2='%{'"${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}"'%}'
+PROMPT_CMDLINE="%{${fg_bold[default]}%}${PROMPT_PRIMARY_INDICATOR}%{${reset_color}%}"
+
+setopt prompt_subst
+PS1=$'$(prompt_headline)\n'"$PROMPT_CMDLINE"
+PS2="%{${fg[default]}%}${PROMPT_SECONDARY_INDICATOR}%{${reset_color}%}"
 
 if [[ $LC_TERMINAL == 'iTerm2' ]]
 then
-  precmd_functions[${precmd_functions[(i)prompt_headline]}]=()
-
-  ITERM2_SQUELCH_MARK=1 # enable manual prompt marking
-  function prompt_headline_iterm2 {
-    echo $(
-        if [[ $functions[iterm2_prompt_mark] ]]
-        then
-            iterm2_prompt_mark # mark headline as prompt start
-        fi
-        prompt_headline
-    )
+  function prompt_iterm2_fix {
+    # if shell integration has been enabled,
+    # mark prompt_headline instead of PS1
+    if [[ $functions[iterm2_prompt_mark] ]]
+    then
+        ITERM2_SQUELCH_MARK=1
+        iterm2_prompt_mark
+    fi  
   }
-  precmd_functions=($precmd_functions prompt_headline_iterm2)
-fi
-
-if [[ $TERMINAL_EMULATOR == 'JetBrains-JediTerm' ]]
-then
-    precmd_functions[${precmd_functions[(i)prompt_headline]}]=()
-
-    setopt prompt_subst
-    PS1=$'%{$(prompt_headline)%}\n'"$PS1"
+  precmd_functions=($precmd_functions prompt_iterm2_fix prompt_headline)
+  PS1="$PROMPT_CMDLINE"
 fi
 
 
