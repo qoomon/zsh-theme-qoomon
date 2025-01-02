@@ -17,7 +17,7 @@ simple, beautiful, functional
   * Branch/Tag
   * Dirty indicator `*` 
   * Indicator if your local repository is ahead `⇡` or behind origin `⇣`
-* Display exit code `$status` after command failed
+* Display exit code `$status` if not `0`
 
 ## Options
 * `PROMPT_INFO_INDICATOR` default `#`
