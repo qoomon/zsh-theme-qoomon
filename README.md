@@ -33,6 +33,7 @@ simple, beautiful, functional
 
 ##### qoomon
   * [iTerm](qoomon.itermcolors)
+  * [Ghostty](qoomon.ghostty)
   * [MacOS Terminal](qoomon.terminal)
 
 
